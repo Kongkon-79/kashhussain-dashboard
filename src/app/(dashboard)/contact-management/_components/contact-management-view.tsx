@@ -29,7 +29,7 @@ const ContactManagementView = ({
           {/* Name */}
           <div>
             <p className="text-sm font-semibold text-gray-800">Name</p>
-            <p className="text-sm text-gray-600">{contactData.name}</p>
+            <p className="text-sm text-gray-600">{contactData.fullName}</p>
           </div>
 
           {/* Email */}
@@ -41,7 +41,7 @@ const ContactManagementView = ({
           {/* Phone */}
           <div>
             <p className="text-sm font-semibold text-gray-800">Phone Number</p>
-            <p className="text-sm text-gray-600">{contactData.phone}</p>
+            <p className="text-sm text-gray-600">{contactData.phoneNumber}</p>
           </div>
 
           {/* Date */}

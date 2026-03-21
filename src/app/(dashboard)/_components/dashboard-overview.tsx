@@ -1,5 +1,5 @@
 "use client";
-import { DollarSign, PackageSearch, ShoppingCart, Users } from "lucide-react";
+import { DollarSign, ShoppingCart, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DashboardOverviewSkeleton from "./dashboard-overview-skeleton";
 import ErrorContainer from "@/components/shared/ErrorContainer/ErrorContainer";
@@ -58,14 +58,30 @@ export function DashboardOverview() {
     );
   } else {
     content = (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         <div className="md:col-span-1 h-[89px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
           <div>
             <p className="text-sm font-semibold text-[#424242] leading-[120%]">
-              Total Revenue
+              Total Users
             </p>
             <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
-              ${data?.data?.totalRevenue?.toFixed(2) || 0}
+              {data?.data?.totalRevenue?.toFixed(2) || 0}
+            </p>
+          </div>
+          <div>
+            <span className="flex items-center justify-center bg-[#E6F4E6] p-3 rounded-full">
+              <Users className="w-6 h-6 text-primary" />
+            </span>
+          </div>
+        </div>
+
+        <div className="md:col-span-1 h-[89px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
+          <div>
+            <p className="text-sm font-semibold text-[#424242] leading-[120%]">
+              Total Earning
+            </p>
+            <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
+              ${data?.data?.totalProducts || 0}
             </p>
           </div>
           <div>
@@ -78,23 +94,7 @@ export function DashboardOverview() {
         <div className="md:col-span-1 h-[89px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
           <div>
             <p className="text-sm font-semibold text-[#424242] leading-[120%]">
-              Total Products
-            </p>
-            <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
-              {data?.data?.totalProducts || 0}
-            </p>
-          </div>
-          <div>
-            <span className="flex items-center justify-center bg-[#E6F4E6] p-3 rounded-full">
-              <PackageSearch className="w-6 h-6 text-primary" />
-            </span>
-          </div>
-        </div>
-
-        <div className="md:col-span-1 h-[89px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
-          <div>
-            <p className="text-sm font-semibold text-[#424242] leading-[120%]">
-              Total Orders
+              Total Report Genarate
             </p>
             <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
               {data?.data?.totalOrders || 0}
@@ -103,22 +103,6 @@ export function DashboardOverview() {
           <div>
             <span className="flex items-center justify-center bg-[#E6F4E6] p-3 rounded-full">
               <ShoppingCart className="w-6 h-6 text-primary" />
-            </span>
-          </div>
-        </div>
-
-        <div className="md:col-span-1 h-[89px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
-          <div>
-            <p className="text-sm font-semibold text-[#424242] leading-[120%]">
-              Total Customers
-            </p>
-            <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
-              {data?.data?.totalCustomers || 0}
-            </p>
-          </div>
-          <div>
-            <span className="flex items-center justify-center bg-[#E6F4E6] p-3 rounded-full">
-              <Users className="w-6 h-6 text-primary" />
             </span>
           </div>
         </div>

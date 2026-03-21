@@ -1,29 +1,26 @@
-export interface Contact {
+
+
+export type Contact = {
   _id: string;
-  userId: string | null;
-  name: string;
+  fullName: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
   message: string;
-  status: "unread" | "read" | string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // or Date if you parse it
+  updatedAt: string; // or Date if you parse it
   __v: number;
-}
+};
 
-export interface PaginationInfo {
-  currentPage: number;
-  totalPages: number;
-  totalData: number;
-}
+export type ContactsMeta = {
+  page: number;
+  limit: number;
+  total: number;
+};
 
-export interface ContactsData {
-  items: Contact[];
-  paginationInfo: PaginationInfo;
-}
-
-export interface ContactsApiResponse {
-  status: boolean;
+export type ContactsApiResponse = {
+  statusCode: number;
+  success: boolean;
   message: string;
-  data: ContactsData;
-}
+  meta: ContactsMeta;
+  data: Contact[];
+};

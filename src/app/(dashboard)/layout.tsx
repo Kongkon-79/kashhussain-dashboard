@@ -1,7 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import React from "react";
 import { DashboardSidebar } from "./_components/dashboard-sidebar";
-import DashboardOverviewHeader from "./_components/dashboard-overview-header";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +14,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <SidebarTrigger />
           </div>
           <div className="w-full">
-            <DashboardOverviewHeader/>
             <div className="bg-[#F8F9FA] min-h-screen">{children}</div>
           </div>
         </main>

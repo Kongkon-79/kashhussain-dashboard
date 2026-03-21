@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import moment from "moment";
 import { useSession } from "next-auth/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Trash2, Eye } from "lucide-react";
+import { Trash2, Eye, Search, SlidersHorizontal } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -13,6 +12,7 @@ import DeleteModal from "@/components/modals/delete-modal";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Contact, ContactsApiResponse } from "./contact-data-type";
 import ContactManagementView from "./contact-management-view";
+import { Button } from "@/components/ui/button";
 
 export default function ContactUsContainer() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,15 +42,20 @@ export default function ContactUsContainer() {
         },
       );
 
+      if (!res.ok) {
+        throw new Error("Failed to fetch contacts");
+      }
+
       return res.json();
     },
+    enabled: !!token,
   });
 
-  console.log(isLoading, isError);
+  const contacts = data?.data ?? [];
+  const totalPages = data?.meta
+    ? Math.ceil(data.meta.total / data.meta.limit)
+    : 0;
 
-  const contacts = data?.data?.items ?? [];
-
-  /* delete contact */
   const { mutate } = useMutation({
     mutationKey: ["delete-contact"],
     mutationFn: async (id: string) => {
@@ -66,15 +71,17 @@ export default function ContactUsContainer() {
 
       return res.json();
     },
-    onSuccess: (data) => {
-      if (!data?.status) {
-        toast.error(data?.message || "Something went wrong");
+    onSuccess: (response) => {
+      if (!response?.status) {
+        toast.error(response?.message || "Something went wrong");
         return;
       }
 
-      toast.success(data?.message || "Contact deleted successfully");
-
+      toast.success(response?.message || "Contact deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["contacts"] });
+    },
+    onError: () => {
+      toast.error("Failed to delete contact");
     },
   });
 
@@ -82,152 +89,187 @@ export default function ContactUsContainer() {
     if (selectedId) {
       mutate(selectedId);
     }
-
     setDeleteModalOpen(false);
   };
 
   return (
-    <div className="p-4 md:p-6">
-      <div className="bg-white rounded-[8px] border border-[#E4E4E4] p-6">
-        <div className="flex items-center justify-between pb-5">
-          <h4 className="text-lg md:text-xl lg:text-2xl font-semibold text-[#252471]">
-            Contact Messages
-          </h4>
+    <div className="px-2 py-4 sm:px-4 md:px-6">
+      <div className="rounded-2xl border border-[#E4EAF3] bg-white p-3 shadow-sm sm:p-4 md:p-5">
+        {/* top bar */}
+        <div className="mb-4 flex flex-col gap-3 md:mb-5 md:flex-row md:items-center md:justify-between">
+          <div className="relative w-full md:max-w-[700px]">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6B7280]" />
+            <Input
+              type="search"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="Search"
+              className="h-11 rounded-xl border-[#C9D4E5] bg-white pl-10 pr-4 text-sm text-[#111827] placeholder:text-[#6B7280] focus-visible:ring-1 focus-visible:ring-[#2747A1]"
+            />
+          </div>
 
-          <Input
-            type="search"
-            className="w-[297px] h-[44px] px-3 rounded-[8px] border border-[#969B9C]"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search"
-          />
+          <Button
+            type="button"
+            className="h-11 rounded-xl bg-[#2747A1] px-4 text-sm font-medium text-white hover:bg-[#1f3b8f]"
+          >
+            <SlidersHorizontal className="mr-2 h-4 w-4" />
+            Short By
+          </Button>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* table */}
+        <div className="overflow-x-auto rounded-xl border border-[#E7EDF5]">
           <table className="min-w-full">
-            <thead className="border-b bg-[#F8F9FA]">
+            <thead className="bg-[#EEF4FB]">
               <tr>
-                <th className="px-4 py-4 text-left text-base font-semibold text-[#3B3B3B]">
-                  Name
+                <th className="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold text-[#374151]">
+                  Uer Name
                 </th>
-                <th className="px-4 py-4 text-left text-base font-semibold text-[#3B3B3B]">
+                <th className="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold text-[#374151]">
                   Email
                 </th>
-                <th className="px-4 py-4 text-left text-base font-semibold text-[#3B3B3B]">
-                  Phone
+                <th className="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold text-[#374151]">
+                  Phone Number
                 </th>
-                <th className="px-4 py-4 text-left text-base font-semibold text-[#3B3B3B]">
-                  Message
-                </th>
-                <th className="px-4 py-4 text-center text-base font-semibold text-[#3B3B3B]">
-                  Created Date
-                </th>
-                <th className="px-4 py-4 text-right text-base font-semibold text-[#3B3B3B]">
+                <th className="whitespace-nowrap px-6 py-4 text-center text-sm font-semibold text-[#374151]">
                   Action
                 </th>
               </tr>
             </thead>
 
-            <tbody>
-              {contacts?.map((contact) => (
-                <tr key={contact._id} className="border-b hover:bg-[#FCFCFD]">
-                  <td className="px-4 py-4 text-sm font-medium">
-                    {contact.name}
-                  </td>
-
-                  <td className="px-4 py-4 text-sm">{contact.email}</td>
-
-                  <td className="px-4 py-4 text-sm">{contact.phone}</td>
-
-                  <td className="px-4 py-4 text-sm max-w-[300px] truncate">
-                    {contact.message}
-                  </td>
-
-                  <td className="px-4 py-4 text-sm text-center">
-                    {moment(contact.createdAt).format("DD/MM/YYYY")}
-                  </td>
-
-                  <td className="px-4 py-4">
-                    <div className="flex justify-end gap-4">
-                      {/* view */}
-                      <button
-                        className="text-[#12B5D3]"
-                        onClick={() => {
-                          setSelectViewContact(true);
-                          setSelectedContact(contact);
-                        }}
-                      >
-                        <Eye className="w-5 h-5" />
-                      </button>
-
-                      {/* delete */}
-                      <button
-                        onClick={() => {
-                          setDeleteModalOpen(true);
-                          setSelectedId(contact._id);
-                        }}
-                        className="text-red-600"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
+            <tbody className="bg-[#F8FBFF]">
+              {isLoading ? (
+                Array.from({ length: 10 }).map((_, index) => (
+                  <tr key={index} className="border-t border-[#E7EDF5]">
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-28 animate-pulse rounded bg-gray-200" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-40 animate-pulse rounded bg-gray-200" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="h-4 w-4 animate-pulse rounded bg-gray-200" />
+                        <div className="h-4 w-4 animate-pulse rounded bg-gray-200" />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : isError ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="py-12 text-center text-sm text-red-500"
+                  >
+                    Failed to load contacts.
                   </td>
                 </tr>
-              ))}
+              ) : contacts.length ? (
+                contacts.map((contact) => (
+                  <tr
+                    key={contact._id}
+                    className="border-t border-[#E7EDF5] transition-colors hover:bg-[#F1F6FD]"
+                  >
+                    <td className="px-6 py-4 text-sm font-medium text-[#4B5563]">
+                      {contact.fullName || "N/A"}
+                    </td>
 
-              {!contacts?.length && (
+                    <td className="px-6 py-4 text-sm text-[#6B7280]">
+                      <span className="block max-w-[260px] truncate">
+                        {contact.email || "N/A"}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-sm text-[#6B7280]">
+                      {contact.phoneNumber || "N/A"}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-3">
+                        <button
+                          type="button"
+                          className="text-[#111827] transition hover:scale-105 hover:text-[#2747A1]"
+                          onClick={() => {
+                            setSelectViewContact(true);
+                            setSelectedContact(contact);
+                          }}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          className="text-[#111827] transition hover:scale-105 hover:text-red-600"
+                          onClick={() => {
+                            setDeleteModalOpen(true);
+                            setSelectedId(contact._id);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
                 <tr>
-                  <td colSpan={6} className="text-center py-10 text-[#6C757D]">
+                  <td
+                    colSpan={4}
+                    className="py-12 text-center text-sm text-[#6B7280]"
+                  >
                     No contacts found.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-
-          {/* pagination */}
-
-          {data &&
-            data?.data &&
-            data?.data?.paginationInfo &&
-            data?.data?.paginationInfo?.totalPages > 1 && (
-              <div className="flex justify-between items-center py-4">
-                <p className="text-[#68706A]">
-                  Showing {currentPage} of{" "}
-                  {data?.data?.paginationInfo?.totalPages}
-                </p>
-
-                <MireyagsPagination
-                  currentPage={currentPage}
-                  totalPages={data?.data?.paginationInfo?.totalPages}
-                  onPageChange={(page) => setCurrentPage(page)}
-                />
-              </div>
-            )}
-
-          {/* delete modal */}
-
-          {deleteModalOpen && (
-            <DeleteModal
-              isOpen={deleteModalOpen}
-              onClose={() => setDeleteModalOpen(false)}
-              onConfirm={handleDelete}
-              title="Are You Sure?"
-              desc="Are you sure you want to delete this Contact?"
-            />
-          )}
-
-          {/* contact view modal  */}
-          <div>
-            {selectViewContact && (
-              <ContactManagementView
-                open={selectViewContact}
-                onOpenChange={(open: boolean) => setSelectViewContact(open)}
-                contactData={selectedContact}
-              />
-            )}
-          </div>
         </div>
+
+        {/* pagination */}
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between py-4">
+            <p className="text-sm text-primary leading-normal font-normal">
+              Showing {(currentPage - 1) * 10 + 1} to{" "}
+              {Math.min(currentPage * 10, totalPages * 10)} of {totalPages * 10}{" "}
+              results
+            </p>
+
+            <div>
+              <MireyagsPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* delete modal */}
+        {deleteModalOpen && (
+          <DeleteModal
+            isOpen={deleteModalOpen}
+            onClose={() => setDeleteModalOpen(false)}
+            onConfirm={handleDelete}
+            title="Are You Sure?"
+            desc="Are you sure you want to delete this Contact?"
+          />
+        )}
+
+        {/* view modal */}
+        {selectViewContact && (
+          <ContactManagementView
+            open={selectViewContact}
+            onOpenChange={(open: boolean) => setSelectViewContact(open)}
+            contactData={selectedContact}
+          />
+        )}
       </div>
     </div>
   );
