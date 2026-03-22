@@ -34,7 +34,7 @@ export default function ContactUsContainer() {
     queryKey: ["contacts", debouncedSearch, currentPage],
     queryFn: async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/contact?page=${currentPage}&limit=10&search=${debouncedSearch}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/contact?page=${currentPage}&limit=4&search=${debouncedSearch}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ export default function ContactUsContainer() {
       return res.json();
     },
     onSuccess: (response) => {
-      if (!response?.status) {
+      if (!response?.success) {
         toast.error(response?.message || "Something went wrong");
         return;
       }
@@ -121,29 +121,29 @@ export default function ContactUsContainer() {
         </div>
 
         {/* table */}
-        <div className="overflow-x-auto rounded-xl border border-[#E7EDF5]">
+        <div className="overflow-x-auto rounded-xl border border-white">
           <table className="min-w-full">
-            <thead className="bg-[#EEF4FB]">
+            <thead className="bg-[#9DC2FF33]">
               <tr>
-                <th className="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold text-[#374151]">
-                  Uer Name
+                <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
+                  User Name
                 </th>
-                <th className="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold text-[#374151]">
+                <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
                   Email
                 </th>
-                <th className="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold text-[#374151]">
+                <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
                   Phone Number
                 </th>
-                <th className="whitespace-nowrap px-6 py-4 text-center text-sm font-semibold text-[#374151]">
+                <th className="whitespace-nowrap px-6 py-4 text-center text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
                   Action
                 </th>
               </tr>
             </thead>
 
-            <tbody className="bg-[#F8FBFF]">
+            <tbody className="bg-[#9DC2FF33]">
               {isLoading ? (
                 Array.from({ length: 10 }).map((_, index) => (
-                  <tr key={index} className="border-t border-[#E7EDF5]">
+                  <tr key={index} className="border-t border-white">
                     <td className="px-6 py-4">
                       <div className="h-4 w-28 animate-pulse rounded bg-gray-200" />
                     </td>
@@ -174,19 +174,19 @@ export default function ContactUsContainer() {
                 contacts.map((contact) => (
                   <tr
                     key={contact._id}
-                    className="border-t border-[#E7EDF5] transition-colors hover:bg-[#F1F6FD]"
+                    className="border-t-[1.5px] border-white transition-colors hover:bg-[#F1F6FD]"
                   >
-                    <td className="px-6 py-4 text-sm font-medium text-[#4B5563]">
+                    <td className="px-6 py-4 text-base font-medium text-[#343A40] leading-normal">
                       {contact.fullName || "N/A"}
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-[#6B7280]">
+                    <td className="px-6 py-4 text-base font-medium text-[#343A40] leading-normal">
                       <span className="block max-w-[260px] truncate">
                         {contact.email || "N/A"}
                       </span>
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-[#6B7280]">
+                    <td className="px-6 py-4 text-base font-medium text-[#343A40] leading-normal">
                       {contact.phoneNumber || "N/A"}
                     </td>
 
@@ -200,7 +200,7 @@ export default function ContactUsContainer() {
                             setSelectedContact(contact);
                           }}
                         >
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-6 w-6 text-black" />
                         </button>
 
                         <button
@@ -211,7 +211,7 @@ export default function ContactUsContainer() {
                             setSelectedId(contact._id);
                           }}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-6 w-6 text-black" />
                         </button>
                       </div>
                     </td>

@@ -59,9 +59,9 @@ export function DashboardOverview() {
   } else {
     content = (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-        <div className="md:col-span-1 h-[89px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
+        <div className="md:col-span-1 h-[100px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
           <div>
-            <p className="text-sm font-semibold text-[#424242] leading-[120%]">
+            <p className="text-sm font-semibold text-[#616161] leading-normal">
               Total Users
             </p>
             <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
@@ -75,9 +75,9 @@ export function DashboardOverview() {
           </div>
         </div>
 
-        <div className="md:col-span-1 h-[89px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
+        <div className="md:col-span-1 h-[100px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
           <div>
-            <p className="text-sm font-semibold text-[#424242] leading-[120%]">
+            <p className="text-sm font-semibold text-[#616161] leading-normal">
               Total Earning
             </p>
             <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
@@ -91,9 +91,9 @@ export function DashboardOverview() {
           </div>
         </div>
 
-        <div className="md:col-span-1 h-[89px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
+        <div className="md:col-span-1 h-[100px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
           <div>
-            <p className="text-sm font-semibold text-[#424242] leading-[120%]">
+            <p className="text-sm font-semibold text-[#616161] leading-normal">
               Total Report Genarate
             </p>
             <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">

@@ -19,7 +19,7 @@ const ContactManagementView = ({
       <DialogContent className="max-w-lg p-6 bg-white !rounded-[12px]">
         
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-[#343A40]">
+          <DialogTitle className="text-xl md:text-2xl font-semibold text-primary leading-normal">
             Contact Details
           </DialogTitle>
         </DialogHeader>
@@ -28,34 +28,34 @@ const ContactManagementView = ({
           
           {/* Name */}
           <div>
-            <p className="text-sm font-semibold text-gray-800">Name</p>
-            <p className="text-sm text-gray-600">{contactData.fullName}</p>
+            <p className="text-lg md:text-xl leading-normal font-semibold text-[#343A40]">Name :</p>
+            <p className="text-base font-medium text-[#343A40] leading-normal">{contactData.fullName}</p>
           </div>
 
           {/* Email */}
           <div>
-            <p className="text-sm font-semibold text-gray-800">Email</p>
-            <p className="text-sm text-gray-600">{contactData.email}</p>
+            <p className="text-lg md:text-xl leading-normal font-semibold text-[#343A40]">Email :</p>
+            <p className="text-base font-medium text-[#343A40] leading-normal">{contactData.email}</p>
           </div>
 
           {/* Phone */}
           <div>
-            <p className="text-sm font-semibold text-gray-800">Phone Number</p>
-            <p className="text-sm text-gray-600">{contactData.phoneNumber}</p>
+            <p className="text-lg md:text-xl leading-normal font-semibold text-[#343A40]">Phone Number :</p>
+            <p className="text-base font-medium text-[#343A40] leading-normal">{contactData.phoneNumber}</p>
           </div>
 
           {/* Date */}
           <div>
-            <p className="text-sm font-semibold text-gray-800">Date</p>
-            <p className="text-sm text-gray-600">
+            <p className="text-lg md:text-xl leading-normal font-semibold text-[#343A40]">Date :</p>
+            <p className="text-base font-medium text-[#343A40] leading-normal">
               {moment(contactData.createdAt).format("MMM DD, YYYY")}
             </p>
           </div>
 
           {/* Message */}
           <div>
-            <p className="text-sm font-semibold text-gray-800 ">Message</p>
-             <p className="text-sm text-gray-600"> {contactData.message}</p>
+            <p className="text-lg md:text-xl leading-normal font-semibold text-[#343A40] ">Message :</p>
+             <p className="text-base font-medium text-[#343A40] leading-normal"> {contactData.message}</p>
             
           </div>
 

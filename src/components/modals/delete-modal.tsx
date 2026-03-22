@@ -7,9 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Image from "next/image";
-
-import error from "../../../public/assets/images/error.png"
+import { Trash2 } from "lucide-react";
 
 type DeleteModalProps = {
   isOpen: boolean;
@@ -22,18 +20,17 @@ type DeleteModalProps = {
 const DeleteModal = ({ isOpen, onClose, onConfirm, title, desc }: DeleteModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[420px] bg-white !rounded-[12px]">
-        <Image src={error} alt="error" width={100} height={100} className="w-12 h-12 object-contain"/>
+      <DialogContent className="max-w-[400px] bg-white !rounded-[12px]">
         <DialogHeader className="">
-          <DialogTitle className="text-lg font-medium leading-[150%] text-[#343A40]">{title}</DialogTitle>
-          <DialogDescription className="text-base font-normal text-[#68706A] leading-[150%]">
+          <DialogTitle className="text-xl md:text-2xl font-semibold leading-normal text-black text-center">{title}</DialogTitle>
+          <DialogDescription className="text-base font-medium text-black leading-normal text-center pt-1">
             {desc}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="w-full grid grid-cols-2 gap-5 mt-3">
           <div className="col-span-1">
             <button
-              className="w-full text-base font-medium bg-[#F8F9FA] text-[#68706A] border border-[#E6E7E6] leading-[120%] py-[10px] px-5 rounded-[10px]"
+              className="w-full h-[44px] text-base font-medium bg-transparent hover:bg-primary text-primary hover:text-white border border-primary leading-normal py-[10px] px-5 rounded-[10px]"
               onClick={onClose}
             >
               Cancel
@@ -41,10 +38,10 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, title, desc }: DeleteModalPro
           </div>
           <div className="col-span-1">
             <button
-              className="w-full text-[#F8F9FA] bg-[#E5102E] border border-[#E5102E] py-[10px] px-6 text-base font-medium leading-[120%] rounded-[8px]"
+              className="w-full h-[44px] flex items-center justify-center gap-2 text-white bg-primary hover:bg-[#FF0000]/80 border border-primary hover:border-[#FF0000] py-[10px] px-6 text-base font-medium leading-[120%] rounded-[8px]"
               onClick={onConfirm}
             >
-              Delete
+             <Trash2 className="w-5 h-5 text-white"/> Delete
             </button>
           </div>
         </DialogFooter>
