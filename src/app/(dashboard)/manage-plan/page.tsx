@@ -6,8 +6,8 @@ const ManagePlan = () => {
   return (
     <div>
         <DashboardOverviewHeader
-        title="Manage Users"
-        description="View, organize, and update all user accounts from one place."
+        title="Manage Plan"
+        description="View, upgrade, or modify your current subscription plan"
       />
       <ManagePlanContainer/>
     </div>

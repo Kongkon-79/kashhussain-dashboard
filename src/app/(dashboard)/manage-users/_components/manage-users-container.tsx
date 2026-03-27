@@ -12,15 +12,18 @@ import DeleteModal from "@/components/modals/delete-modal";
 import { useDebounce } from "@/hooks/useDebounce";
 
 import { Button } from "@/components/ui/button";
-import { Contact, ContactsApiResponse } from "../../contact-management/_components/contact-data-type";
-import ContactManagementView from "../../contact-management/_components/contact-management-view";
+import { ManageUser, ManageUserApiResponse } from "./manage-users-data-type";
+import ManageUserView from "./manage-user-view";
+import moment from "moment";
 
 export default function ManageUserscontainer() {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
 
   const [selectViewContact, setSelectViewContact] = useState(false);
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+  const [selectedContact, setSelectedContact] = useState<ManageUser | null>(
+    null,
+  );
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState("");
@@ -31,11 +34,11 @@ export default function ManageUserscontainer() {
   const { data: session } = useSession();
   const token = (session?.user as { accessToken?: string })?.accessToken;
 
-  const { data, isLoading, isError } = useQuery<ContactsApiResponse>({
-    queryKey: ["contacts", debouncedSearch, currentPage],
+  const { data, isLoading, isError } = useQuery<ManageUserApiResponse>({
+    queryKey: ["users", debouncedSearch, currentPage],
     queryFn: async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/contact?page=${currentPage}&limit=4&search=${debouncedSearch}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user?page=${currentPage}&limit=10&search=${debouncedSearch}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +47,7 @@ export default function ManageUserscontainer() {
       );
 
       if (!res.ok) {
-        throw new Error("Failed to fetch contacts");
+        throw new Error("Failed to fetch users");
       }
 
       return res.json();
@@ -52,16 +55,16 @@ export default function ManageUserscontainer() {
     enabled: !!token,
   });
 
-  const contacts = data?.data ?? [];
+  const users = data?.data ?? [];
   const totalPages = data?.meta
     ? Math.ceil(data.meta.total / data.meta.limit)
     : 0;
 
   const { mutate } = useMutation({
-    mutationKey: ["delete-contact"],
+    mutationKey: ["delete-user"],
     mutationFn: async (id: string) => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/contact/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -78,11 +81,11 @@ export default function ManageUserscontainer() {
         return;
       }
 
-      toast.success(response?.message || "Contact deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      toast.success(response?.message || "user deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
     onError: () => {
-      toast.error("Failed to delete contact");
+      toast.error("Failed to delete user");
     },
   });
 
@@ -133,7 +136,13 @@ export default function ManageUserscontainer() {
                   Email
                 </th>
                 <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
+                  Joining Date
+                </th>
+                <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
                   Phone Number
+                </th>
+                <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
+                  Status
                 </th>
                 <th className="whitespace-nowrap px-6 py-4 text-center text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
                   Action
@@ -168,11 +177,11 @@ export default function ManageUserscontainer() {
                     colSpan={4}
                     className="py-12 text-center text-sm text-red-500"
                   >
-                    Failed to load contacts.
+                    Failed to load users.
                   </td>
                 </tr>
-              ) : contacts.length ? (
-                contacts.map((contact) => (
+              ) : users.length ? (
+                users.map((contact) => (
                   <tr
                     key={contact._id}
                     className="border-t-[1.5px] border-white transition-colors hover:bg-[#F1F6FD]"
@@ -186,9 +195,18 @@ export default function ManageUserscontainer() {
                         {contact.email || "N/A"}
                       </span>
                     </td>
+                    <td className="px-6 py-4 text-base font-medium text-[#343A40] leading-normal">
+                      <span className="block max-w-[260px] truncate">
+                       {moment(contact.createdAt).format("DD MMM YYYY")}
+                      </span>
+                    </td>
 
                     <td className="px-6 py-4 text-base font-medium text-[#343A40] leading-normal">
                       {contact.phoneNumber || "N/A"}
+                    </td>
+
+                    <td className="px-6 py-4 text-base font-medium text-[#343A40] leading-normal">
+                      {contact.status || "N/A"}
                     </td>
 
                     <td className="px-6 py-4">
@@ -224,7 +242,7 @@ export default function ManageUserscontainer() {
                     colSpan={4}
                     className="py-12 text-center text-sm text-[#6B7280]"
                   >
-                    No contacts found.
+                    No users found.
                   </td>
                 </tr>
               )}
@@ -259,16 +277,16 @@ export default function ManageUserscontainer() {
             onClose={() => setDeleteModalOpen(false)}
             onConfirm={handleDelete}
             title="Are You Sure?"
-            desc="Are you sure you want to delete this Contact?"
+            desc="Are you sure you want to delete this User?"
           />
         )}
 
         {/* view modal */}
         {selectViewContact && (
-          <ContactManagementView
+          <ManageUserView
             open={selectViewContact}
             onOpenChange={(open: boolean) => setSelectViewContact(open)}
-            contactData={selectedContact}
+            manageUser={selectedContact}
           />
         )}
       </div>

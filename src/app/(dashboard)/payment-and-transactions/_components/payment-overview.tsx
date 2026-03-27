@@ -1,5 +1,5 @@
 "use client";
-import { Users } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorContainer from "@/components/shared/ErrorContainer/ErrorContainer";
 import { useSession } from "next-auth/react";
@@ -18,7 +18,7 @@ export interface DashboardStats {
   totalCustomers: number;
 }
 
-export function ManageUsersOverview() {
+export function PaymentOverview() {
   const session = useSession();
   const token = (session?.data?.user as { accessToken: string })?.accessToken;
 
@@ -62,47 +62,15 @@ export function ManageUsersOverview() {
         <div className="md:col-span-1 h-[100px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
           <div>
             <p className="text-sm font-semibold text-[#616161] leading-normal">
-              Total Users
+              Total Earning
             </p>
             <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
-              {data?.data?.totalRevenue?.toFixed(2) || 0}
+              ${data?.data?.totalRevenue?.toFixed(2) || 0}
             </p>
           </div>
           <div>
             <span className="flex items-center justify-center bg-[#F7F7FE] p-3 rounded-full">
-              <Users className="w-6 h-6 text-primary" />
-            </span>
-          </div>
-        </div>
-
-        <div className="md:col-span-1 h-[100px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
-          <div>
-            <p className="text-sm font-semibold text-[#616161] leading-normal">
-              Active Users
-            </p>
-            <p className="text-3xl leading-[120%] text-[#3FA96B] font-bold font-hexco pt-2">
-              {data?.data?.totalProducts || 0}
-            </p>
-          </div>
-          <div>
-            <span className="flex items-center justify-center bg-[#EAF9F1] p-3 rounded-full">
-              <Users className="w-6 h-6 text-[#3FA96B]" />
-            </span>
-          </div>
-        </div>
-
-        <div className="md:col-span-1 h-[100px] flex items-center justify-between bg-white shadow-[0px_4px_6px_0px_#0000001A] px-4 rounded-[8px]">
-          <div>
-            <p className="text-sm font-semibold text-[#616161] leading-normal">
-              Suspended Users
-            </p>
-            <p className="text-3xl leading-[120%] text-[#F2415A] font-bold font-hexco pt-2">
-              {data?.data?.totalOrders || 0}
-            </p>
-          </div>
-          <div>
-            <span className="flex items-center justify-center bg-[#FCEEEC] p-3 rounded-full">
-              <Users className="w-6 h-6 text-[#E5533D]" />
+              <CreditCard  className="w-6 h-6 text-primary" />
             </span>
           </div>
         </div>

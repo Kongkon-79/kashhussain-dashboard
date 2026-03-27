@@ -6,8 +6,8 @@ const ContactManagementPage = () => {
   return (
     <div>
       <DashboardOverviewHeader
-        title="Manage Users"
-        description="View, organize, and update all user accounts from one place."
+        title="Contact Management"
+        description="Efficiently store, update, and manage your contact information."
       />
       <ContactManagementContainer />
     </div>

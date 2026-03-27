@@ -8,7 +8,7 @@ const SettingsPage = () => {
     <div className=''>
        <DashboardOverviewHeader
         title="Settings"
-        description="View, organize, and update all user accounts from one place."
+        description="Manage your account preferences and system settings in one place."
       />
       <ChangePasswordForm/>
     </div>

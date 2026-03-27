@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Trash2, Eye, Search, SlidersHorizontal } from "lucide-react";
+import { Trash2, Eye, Search, Plus, SquarePen } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -12,12 +12,19 @@ import DeleteModal from "@/components/modals/delete-modal";
 import { useDebounce } from "@/hooks/useDebounce";
 
 import { Button } from "@/components/ui/button";
-import { Contact, ContactsApiResponse } from "../../contact-management/_components/contact-data-type";
+import {
+  Contact,
+  ContactsApiResponse,
+} from "../../contact-management/_components/contact-data-type";
 import ContactManagementView from "../../contact-management/_components/contact-management-view";
+import moment from "moment";
+import AddEditPlanFormModal from "./add-edit-plan-form";
 
 export default function ManagePlanContainer() {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+
+  const [addEditModalOpen, setAddEditModalOpen] = useState(false);
 
   const [selectViewContact, setSelectViewContact] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
@@ -114,10 +121,13 @@ export default function ManagePlanContainer() {
 
           <Button
             type="button"
-            className="h-11 rounded-xl bg-[#2747A1] px-4 text-sm font-medium text-white hover:bg-[#1f3b8f]"
+            onClick={() => {
+              setAddEditModalOpen(true);
+            }}
+            className="h-11 rounded-xl bg-primary px-4 text-base font-medium text-white leading-normal"
           >
-            <SlidersHorizontal className="mr-2 h-4 w-4" />
-            Short By
+            <Plus className="mr-1 h-8 w-8 text-white" />
+            Add New Plan
           </Button>
         </div>
 
@@ -127,13 +137,13 @@ export default function ManagePlanContainer() {
             <thead className="bg-[#9DC2FF33]">
               <tr>
                 <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
-                  User Name
+                  Plan Name
                 </th>
                 <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
-                  Email
+                  Create Date
                 </th>
                 <th className="whitespace-nowrap px-6 py-4 text-left text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
-                  Phone Number
+                  Price
                 </th>
                 <th className="whitespace-nowrap px-6 py-4 text-center text-lg md:text-xl leading-normal font-semibold text-[#343A40]">
                   Action
@@ -183,16 +193,25 @@ export default function ManagePlanContainer() {
 
                     <td className="px-6 py-4 text-base font-medium text-[#343A40] leading-normal">
                       <span className="block max-w-[260px] truncate">
-                        {contact.email || "N/A"}
+                        {moment(contact.createdAt).format("DD MMM YYYY")}
                       </span>
                     </td>
 
                     <td className="px-6 py-4 text-base font-medium text-[#343A40] leading-normal">
-                      {contact.phoneNumber || "N/A"}
+                      $ {"N/A"}
                     </td>
 
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-3">
+                        <button
+                          type="button"
+                          className="text-[#111827] transition hover:scale-105 hover:text-[#2747A1]"
+                          onClick={() => {
+                            setAddEditModalOpen(true);
+                          }}
+                        >
+                          <SquarePen className="h-6 w-6 text-black" />
+                        </button>
                         <button
                           type="button"
                           className="text-[#111827] transition hover:scale-105 hover:text-[#2747A1]"
@@ -269,6 +288,14 @@ export default function ManagePlanContainer() {
             open={selectViewContact}
             onOpenChange={(open: boolean) => setSelectViewContact(open)}
             contactData={selectedContact}
+          />
+        )}
+
+        {/* add edit modal form  */}
+        {addEditModalOpen && (
+          <AddEditPlanFormModal
+            open={addEditModalOpen}
+            onOpenChange={setAddEditModalOpen}
           />
         )}
       </div>
