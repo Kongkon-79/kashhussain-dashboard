@@ -4,30 +4,20 @@ import { useQuery } from "@tanstack/react-query";
 import ErrorContainer from "@/components/shared/ErrorContainer/ErrorContainer";
 import { useSession } from "next-auth/react";
 import DashboardOverviewSkeleton from "../../_components/dashboard-overview-skeleton";
+import { DashboardOverviewsApiResponse } from "../../_components/dashboard-overview-data-type";
 
-export interface DashboardOverviewApiResponse {
-  status: boolean;
-  message: string;
-  data: DashboardStats;
-}
 
-export interface DashboardStats {
-  totalRevenue: number;
-  totalProducts: number;
-  totalOrders: number;
-  totalCustomers: number;
-}
 
 export function ManageUsersOverview() {
   const session = useSession();
   const token = (session?.data?.user as { accessToken: string })?.accessToken;
 
   const { data, isLoading, isError, error } =
-    useQuery<DashboardOverviewApiResponse>({
+    useQuery<DashboardOverviewsApiResponse>({
       queryKey: ["dashboard-overview"],
       queryFn: async () => {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/stats`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/overview`,
           {
             method: "GET",
             headers: {
@@ -65,7 +55,7 @@ export function ManageUsersOverview() {
               Total Users
             </p>
             <p className="text-3xl leading-[120%] text-primary font-bold font-hexco pt-2">
-              {data?.data?.totalRevenue?.toFixed(2) || 0}
+              {data?.data?.totalUser|| 0}
             </p>
           </div>
           <div>
@@ -81,7 +71,7 @@ export function ManageUsersOverview() {
               Active Users
             </p>
             <p className="text-3xl leading-[120%] text-[#3FA96B] font-bold font-hexco pt-2">
-              {data?.data?.totalProducts || 0}
+              {data?.data?.activeUser || 0}
             </p>
           </div>
           <div>
@@ -97,7 +87,7 @@ export function ManageUsersOverview() {
               Suspended Users
             </p>
             <p className="text-3xl leading-[120%] text-[#F2415A] font-bold font-hexco pt-2">
-              {data?.data?.totalOrders || 0}
+              {data?.data?.suspended || 0}
             </p>
           </div>
           <div>

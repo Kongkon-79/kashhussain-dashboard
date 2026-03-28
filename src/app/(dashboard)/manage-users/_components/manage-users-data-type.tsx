@@ -18,12 +18,10 @@ export interface ManageUser {
   fullName: string;
   email: string;
   role: "admin" | "user";
-  status: string;
+  status: "active" | "suspended";
   createdAt: string; // ISO Date
   updatedAt: string; // ISO Date
   __v: number;
-
-  // Optional fields (not in every user)
   verifiedForget?: boolean;
   address?: string;
   city?: string;
